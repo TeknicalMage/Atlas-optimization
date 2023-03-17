@@ -1,0 +1,106 @@
+import time
+from datetime import datetime
+
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import select
+from selenium.webdriver.support.ui import Select
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import NoSuchElementException
+
+from selenium.webdriver.common.action_chains import ActionChains
+
+import subprocess
+
+import random
+import os
+
+
+
+def access():
+
+
+    
+    chrome_options = Options() 
+    
+        
+    driver = webdriver.Chrome()
+    chrome_options.add_argument('--log-level=3')
+    chrome_options.add_argument('--disable-dev-shm-usag')
+    chrome_options.add_argument("--ignore-certificate-errors")
+    chrome_options.add_argument("--disable-buffer-bw-compression")
+    chrome_options.add_argument("--enable-background-thread-pool")
+    chrome_options.add_argument("--in-process-gpu")
+    
+    
+    #2023|01|19
+    site_access = ("https://www.reddit.com/search/?q=Bitcoin&sort=top&t=week")
+    last_height = driver.execute_script("return document.body.scrollHeight")
+
+    
+    
+    driver.get(site_access)
+    
+    
+    number = 1
+    
+    while number < 500:
+        try:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            new_height = driver.execute_script("return document.body.scrollHeight")
+        except:
+            pass
+        if new_height == last_height:
+            pass
+        last_height = new_height
+        number+=1 
+        print(number)
+
+    ########################################################################################
+
+    time.sleep(1)
+    iter = 1
+    while True: 
+        try:
+            posturl_var = (driver.find_elements(By.XPATH, '//*[@class="_2n04GrCyhhQf-Kshn7akmH _19FzInkloQSdrf0rh3Omen"]/div/div/div/a')[iter]).get_attribute("href")
+            subredditname_var = (driver.find_elements(By.XPATH, '//*[@data-testid="subreddit-name"]')[iter]).get_attribute("href")
+            username_var = (driver.find_elements(By.XPATH, '//*[@class="_3-fo1J0EWS8TawiUkoZ9DH _23wugcdiaj44hdfugIAlnX oQctV4n0yUb0uiHDdGnmE"]')[iter]).get_attribute("href")
+            
+            votes_var = (driver.find_elements(By.XPATH, '//*[@class="_2IpBiHtzKzIxk2fKI4UOv1 _2n04GrCyhhQf-Kshn7akmH HNL__wz5plDpzJe5Lnn"]')[iter]).get_attribute("innerHTML")
+            
+            x1 = votes_var.replace('<span class="_vaFo96phV6L5Hltvwcox">', '' )
+            votes_var = x1.replace("</span>", "")
+            x1 = votes_var.replace('<span class="_vaFo96phV6L5Hltvwcox">', "")
+            votes_var = x1.replace('<span class="_vaFo96phV6L5Hltvwcox">', "")
+            
+            
+            
+            #username = (driver.find_elements(By.XPATH, '//*[@class="wM6scouPXXsFDSZmZPHRo DjcdNGtVXPcxG0yiFXIoZ _23wugcdiaj44hdfugIAlnX "]')[iter]).get_attribute("href")
+            #x1 = texthandle.replace('<p class="_1qeIAgB0cPwnLhDF9XSiJM">', '' )
+            #texthandle = x1.replace('</p class="_1qeIAgB0cPwnLhDF9XSiJM">', '' )
+            #x1 = texthandle.replace('</p>', '' )
+            #texthandle = x1.replace('<p>', '' )
+            iter+=1
+            print(posturl_var + "\n" + subredditname_var + "\n" + username_var)
+            print(votes_var)
+        except:
+            break
+   
+    
+   
+    
+    
+
+start_time = time.time()
+access()
+print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+ 
+
+
