@@ -18,12 +18,10 @@ import subprocess
 
 import random
 import os
-
+Posts = []
 
 
 def access():
-
-
     
     chrome_options = Options() 
     
@@ -36,9 +34,10 @@ def access():
     chrome_options.add_argument("--enable-background-thread-pool")
     chrome_options.add_argument("--in-process-gpu")
     
-    
+    searchq = input()
+    start_time = time.time()
     #2023|01|19
-    site_access = ("https://www.reddit.com/r/AskReddit/comments/11r9k9u/whats_the_best_comedy_movie_you_have_ever_watched/")
+    site_access = ("https://www.reddit.com/search/?q={}&sort=top&t=week").format(searchq)
     last_height = driver.execute_script("return document.body.scrollHeight")
 
     
@@ -48,7 +47,7 @@ def access():
     
     number = 1
     
-    while number < 300:
+    while number < 2000:
         try:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             new_height = driver.execute_script("return document.body.scrollHeight")
@@ -62,18 +61,28 @@ def access():
 
     ########################################################################################
 
-    
+    time.sleep(1)
     iter = 1
     while True: 
         try:
-            texthandle = (driver.find_elements(By.XPATH, '//*[@class="_292iotee39Lmt0MkQZ2hPV RichTextJSON-root"]')[iter]).get_attribute("innerHTML")
-            username = (driver.find_elements(By.XPATH, '//*[@class="wM6scouPXXsFDSZmZPHRo DjcdNGtVXPcxG0yiFXIoZ _23wugcdiaj44hdfugIAlnX "]')[iter]).get_attribute("href")
-            x1 = texthandle.replace('<p class="_1qeIAgB0cPwnLhDF9XSiJM">', '' )
-            texthandle = x1.replace('</p class="_1qeIAgB0cPwnLhDF9XSiJM">', '' )
-            x1 = texthandle.replace('</p>', '' )
-            texthandle = x1.replace('<p>', '' )
+            posturl_var = (driver.find_elements(By.XPATH, '//*[@class="_2n04GrCyhhQf-Kshn7akmH _19FzInkloQSdrf0rh3Omen"]/div/div/div/a')[iter]).get_attribute("href")
+            subredditname_var = (driver.find_elements(By.XPATH, '//*[@data-testid="subreddit-name"]')[iter]).get_attribute("href")
+            username_var = (driver.find_elements(By.XPATH, '//*[@class="_3-fo1J0EWS8TawiUkoZ9DH _23wugcdiaj44hdfugIAlnX oQctV4n0yUb0uiHDdGnmE"]')[iter]).get_attribute("href")
+            
+            votes_var = (driver.find_elements(By.XPATH, '//*[@class="_2IpBiHtzKzIxk2fKI4UOv1 _2n04GrCyhhQf-Kshn7akmH HNL__wz5plDpzJe5Lnn"]')[iter]).get_attribute("innerHTML")
+            
+            edit = votes_var.replace('<span class="_vaFo96phV6L5Hltvwcox">', '' )
+            votes_var = edit.replace("</span>", "")
+            edit = votes_var.replace('<span class="_vaFo96phV6L5Hltvwcox">', "")
+            votes_var = edit.replace('<span class="_vaFo96phV6L5Hltvwcox">', "")
+            
             iter+=1
-            print(username + "\n" + texthandle + "\n")
+            thelist = [posturl_var, subredditname_var, username_var, votes_var]
+            
+            Posts.append(thelist)
+            
+            print(posturl_var + "\n" + subredditname_var + "\n" + username_var)
+            print(votes_var)
         except:
             break
    
@@ -85,8 +94,7 @@ def access():
 start_time = time.time()
 access()
 print("--- %s seconds ---" % (time.time() - start_time))
-
-
+print(Posts)
 
  
 
