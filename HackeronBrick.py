@@ -23,77 +23,46 @@ Posts = []
 
 def access():
     
-    options = Options()
-    options.page_load_strategy = 'normal'
+    chrome_options = Options() 
     
-
-    options.add_argument('--log-level=3')
-    options.add_argument('--disable-dev-shm-usag')
-    options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--disable-buffer-bw-compression")
-    options.add_argument("--enable-background-thread-pool")
-    options.add_argument("--in-process-gpu")
-    options.add_argument("--mute-audio")
-    options.add_argument("--start-maximized")
-
-    driver = webdriver.Chrome(options=options)
+        
+    driver = webdriver.Chrome()
+    chrome_options.add_argument('--log-level=3')
+    chrome_options.add_argument('--disable-dev-shm-usag')
+    chrome_options.add_argument("--ignore-certificate-errors")
+    chrome_options.add_argument("--disable-buffer-bw-compression")
+    chrome_options.add_argument("--enable-background-thread-pool")
+    chrome_options.add_argument("--in-process-gpu")
     
     searchq = input()
+    start_time = time.time()
     #2023|01|19
-    site_access = ("https://www.youtube.com/results?search_query={}").format(searchq)
+    site_access = ("https://hackerone.com/opportunities/all/search?bbp=&vdp=&private=&high_response_efficiency=&managed=&offers_retesting=&bounty_splitting=&credentials=&new=&updated=&category=&active_campaign=&gold_standard=&tech=&industries=&asset_types=&ordering=Newest+programs&search=&minimum_low_checked=&minimum_medium_checked=&minimum_high_checked=&minimum_critical_checked=&minimum_low_value=&minimum_medium_value=&minimum_high_value=&minimum_critical_value=")
     last_height = driver.execute_script("return document.body.scrollHeight")
 
     
-    action = ActionChains(driver)
+    
     driver.get(site_access)
     
     
-    endloop = 0
-
-    iteratem = 1
-
-    #Url iteration
-    urlitr = 1
-    #Url iteration
-
-    while endloop < 1000:
-        endloop+=1
-        action.key_down(Keys.ARROW_DOWN).perform()
-        action.key_down(Keys.ARROW_DOWN).perform() 
-        action.key_down(Keys.ARROW_DOWN).perform() 
-
-    top = (driver.find_elements(By.XPATH, '//*[@class="yt-simple-endpoint style-scope ytd-video-renderer"]'))
-    urlcount = (len(top))
-    print(urlcount)
+    number = 1
     
-    mainvalue = 0
-
-    for mainvalue in range(urlcount):
-        linkvar = (driver.find_elements(By.XPATH, '//*[@class="yt-simple-endpoint style-scope ytd-video-renderer"]')[mainvalue]).get_attribute("href")
-
+    while number < 2000:
         try:
-            id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("aria-label")
-            print(id)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            new_height = driver.execute_script("return document.body.scrollHeight")
         except:
-            id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("innerText")
-            print(id)
+            pass
+        if new_height == last_height:
+            pass
+        last_height = new_height
+        number+=1 
+        print(number)
 
-
-        
-        print(linkvar) 
-
-        
-        
-
-    
-
-
-    
     ########################################################################################
 
+    time.sleep(1)
     iter = 1
-
-    
     while True: 
         try:
             posturl_var = (driver.find_elements(By.XPATH, '//*[@class="_2n04GrCyhhQf-Kshn7akmH _19FzInkloQSdrf0rh3Omen"]/div/div/div/a')[iter]).get_attribute("href")
@@ -122,7 +91,7 @@ def access():
     
     
 
-
+start_time = time.time()
 start_time = time.time()
 access()
 print("--- %s seconds ---" % (time.time() - start_time))
