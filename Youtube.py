@@ -18,6 +18,9 @@ import subprocess
 
 import random
 import os
+
+f = open('urllist.txt','w')
+
 Posts = []
 
 
@@ -34,7 +37,7 @@ def access():
     options.add_argument("--enable-background-thread-pool")
     options.add_argument("--in-process-gpu")
     options.add_argument("--mute-audio")
-    options.add_argument("--start-maximized")
+    #options.add_argument("--start-maximized")
 
     driver = webdriver.Chrome(options=options)
     
@@ -56,11 +59,12 @@ def access():
     urlitr = 1
     #Url iteration
 
-    while endloop < 1000:
+    while endloop < 3000:
         endloop+=1
         action.key_down(Keys.ARROW_DOWN).perform()
         action.key_down(Keys.ARROW_DOWN).perform() 
         action.key_down(Keys.ARROW_DOWN).perform() 
+        print(endloop)
 
     top = (driver.find_elements(By.XPATH, '//*[@class="yt-simple-endpoint style-scope ytd-video-renderer"]'))
     urlcount = (len(top))
@@ -71,15 +75,16 @@ def access():
     for mainvalue in range(urlcount):
         linkvar = (driver.find_elements(By.XPATH, '//*[@class="yt-simple-endpoint style-scope ytd-video-renderer"]')[mainvalue]).get_attribute("href")
 
-        try:
-            id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("aria-label")
-            print(id)
-        except:
-            id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("innerText")
-            print(id)
+        #try:
+            #id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("aria-label")
+            #print(id)
+        #except:
+            #id = (driver.find_elements(By.XPATH, '//*[@id="video-title"]')[mainvalue]).get_attribute("innerText")
+            #print(id)
+            #pass
 
 
-        
+        f.write(linkvar + "\n")
         print(linkvar) 
 
         
