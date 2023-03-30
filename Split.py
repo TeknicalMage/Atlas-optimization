@@ -16,27 +16,27 @@ from selenium.common.exceptions import NoSuchElementException
 
 from selenium.webdriver.common.action_chains import ActionChains
 
-import subprocess
-
-import random
-import os
-
 import pymongo
 from pymongo import MongoClient
 
-cluster= 
+cluster= MongoClient("mongodb+srv://macrollcofficial:IrytsrNRSTaQestB@macrocluster.wqpdnof.mongodb.net/?retryWrites=true&w=majority")
 db = cluster ["Youtube-test"]
 collection  = db["test"]
 
+commentstack = {
 
+    }
+    
   
 def full_name():
+
+    
     first_name = None
   
     argv = sys.argv[1:]
   
     try:
-        opts, args = getopt.getopt(argv, "f:")
+        opts, args = getopt.getopt(argv, "l:")
       
     except:
         print("Error")
@@ -47,7 +47,7 @@ def full_name():
 
     urlstring = str(first_name)
 
-    time.sleep(5)
+    time.sleep(3)
 
     Posts = []
     
@@ -56,14 +56,16 @@ def full_name():
     
 
     options.add_argument('--log-level=3')
-    options.add_argument('--disable-dev-shm-usag')
+    #options.add_argument('--disable-dev-shm-usag')
     options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--disable-buffer-bw-compression")
+    #options.add_argument("--disable-buffer-bw-compression")
     options.add_argument("--disable-extensions")
-    options.add_argument("--enable-background-thread-pool")
-    options.add_argument("--in-process-gpu")
+    #options.add_argument("--enable-background-thread-pool")
+    #options.add_argument("--in-process-gpu")
     options.add_argument("--mute-audio")
-    options.add_argument("--process-per-tab")
+    options.add_argument("--start-maximized")
+
+    #options.add_argument("--process-per-tab")
 
 
     driver = webdriver.Chrome(options=options)
@@ -75,20 +77,17 @@ def full_name():
     
     action = ActionChains(driver)
     driver.implicitly_wait(6)
-
     driver.get(site_access)
     
   
     keywords = (driver.find_elements(By.XPATH, '//*[@name="keywords"]')[0]).get_attribute("content")
     Title = (driver.find_elements(By.XPATH, '//*[@class="style-scope ytd-watch-metadata"]/h1')[0]).get_attribute("innerText")
-    
-
     Likes = (driver.find_elements(By.XPATH, '//*[@class="factoid-value style-scope ytd-factoid-renderer"]')[0]).get_attribute("innerText")
     Views = (driver.find_elements(By.XPATH, '//*[@class="factoid-value style-scope ytd-factoid-renderer"]')[1]).get_attribute("innerText")
     Date = (driver.find_elements(By.XPATH, '//*[@class="factoid style-scope ytd-factoid-renderer"]')[2]).get_attribute("aria-label") 
  
     
-     
+
 
     print(keywords)
     print(Title)
@@ -96,43 +95,54 @@ def full_name():
     print(Views)
     print(Date)
 
-    #post = {"Keywords": keywords, "Title": Title, "Likes": Likes, "Views": Views, "Date": Date}
-    #collection.insert_one(post)
-
-
-
     
-    endloop = 1
-    driver.implicitly_wait(0.0001)
+    
+    dicton_vid_info = {"keywords" : keywords, "Title" : Title, "Likes" : Likes, "Views" : Views, "Date" : Date} 
+    commentstack.update(dicton_vid_info)
+    
+    endloop = 0
+     
+    driver.implicitly_wait(0.0)
     while endloop < 4000:
         try:
-            action.key_down(Keys.ARROW_DOWN).perform()
+            action.key_down(Keys.END).perform()
             print(endloop)
             endloop+=1
+            
         except:
             pass
 
-
     thecomments = (driver.find_elements(By.XPATH, '//*[@class="style-scope ytd-comment-thread-renderer"]//*[@id="content-text"]'))
-
     totalcount = 0
 
     listo = (len(thecomments))
-    while totalcount < listo:
-        
+    while totalcount != listo:
         commenter = (driver.find_elements(By.XPATH, '//*[@class="style-scope ytd-comment-thread-renderer"]//*[@id="author-text"]/span')[totalcount]).get_attribute("innerHTML") 
         valsingular = (driver.find_elements(By.XPATH, '//*[@class="style-scope ytd-comment-thread-renderer"]//*[@id="content-text"]')[totalcount]).get_attribute("innerHTML") 
-        #Posts.append(valsingular)
-        comment = valsingular.replace(" ", "")
-        #print(commenter)
-        #print(comment)
         totalcount+=1
 
-        post_comment = {"commenter": commenter, "comment": comment}
-        collection.insert_one(post_comment)
+
+        #Setup for dictionary. Need more strings  
+        Scommenter = str(commenter)
+        Scomment = str(valsingular)
+
+        
+        
+        #post_comment = {"Video Title": Title, "Video Keywords": keywords, "commenter": commenter, "comment": comment}
+        dicton_commentstack = {Scommenter : Scomment}
+        commentstack.update(dicton_commentstack) 
+        print(totalcount)
+
+        
+
+    print("Pushing Comments")
+    print(commentstack)
+    collection.insert_one(commentstack)
+        
 
 
 
 
   
 full_name()    
+

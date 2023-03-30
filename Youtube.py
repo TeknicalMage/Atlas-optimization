@@ -31,13 +31,14 @@ def access():
     
 
     options.add_argument('--log-level=3')
-    options.add_argument('--disable-dev-shm-usag')
+    #options.add_argument('--disable-dev-shm-usag')
     options.add_argument("--ignore-certificate-errors")
-    options.add_argument("--disable-buffer-bw-compression")
-    options.add_argument("--enable-background-thread-pool")
-    options.add_argument("--in-process-gpu")
+    #options.add_argument("--disable-buffer-bw-compression")
+    options.add_argument("--disable-extensions")
+    #options.add_argument("--enable-background-thread-pool")
+    #options.add_argument("--in-process-gpu")
     options.add_argument("--mute-audio")
-    #options.add_argument("--start-maximized")
+    options.add_argument("--start-maximized")
 
     driver = webdriver.Chrome(options=options)
     
@@ -61,9 +62,7 @@ def access():
 
     while endloop < 3000:
         endloop+=1
-        action.key_down(Keys.ARROW_DOWN).perform()
-        action.key_down(Keys.ARROW_DOWN).perform() 
-        action.key_down(Keys.ARROW_DOWN).perform() 
+        action.key_down(Keys.PAGE_DOWN).perform()
         print(endloop)
 
     top = (driver.find_elements(By.XPATH, '//*[@class="yt-simple-endpoint style-scope ytd-video-renderer"]'))
